@@ -1,52 +1,29 @@
-<div class="max-w-4xl mx-auto mt-8">
-	<h2 class="text-2xl font-bold mb-4">Empleados</h2>
-	<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
-		<button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" (click)="onNuevo()">Nuevo empleado</button>
-		<input type="text" [(ngModel)]="search" placeholder="Buscar..." class="border rounded px-3 py-2 w-full md:w-64" />
-	</div>
-
-	<div *ngIf="mostrarForm" class="mb-8">
-		<app-empleado-form [empleado]="empleadoEdit" (guardado)="onGuardado()"></app-empleado-form>
-		<button class="mt-2 bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500" (click)="mostrarForm = false">Cancelar</button>
-	</div>
-
-	<table class="min-w-full bg-white rounded shadow overflow-hidden">
-		<thead class="bg-gray-100">
-			<tr>
-				<th class="py-2 px-4 text-left">Nombre</th>
-				<th class="py-2 px-4 text-left">Correo</th>
-				<th class="py-2 px-4 text-left">Cargo</th>
-				<th class="py-2 px-4 text-left">Fecha ingreso</th>
-				<th class="py-2 px-4">Acciones</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let empleado of empleadosFiltrados">
-				<td class="py-2 px-4">{{ empleado.nombre }}</td>
-				<td class="py-2 px-4">{{ empleado.correo }}</td>
-				<td class="py-2 px-4">{{ empleado.cargo }}</td>
-				<td class="py-2 px-4">{{ empleado.fecha_ingreso | date:'yyyy-MM-dd' }}</td>
-				<td class="py-2 px-4 flex gap-2">
-					<button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600" (click)="onEdit(empleado)">Editar</button>
-					<button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" (click)="onDelete(empleado.id)">Eliminar</button>
-					<button class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600" (click)="onFamiliares(empleado)">Familiares</button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
-	<!-- Paginación -->
-	<div class="flex justify-center items-center gap-2 mt-4" *ngIf="totalPaginas > 1">
-		<button (click)="page = page - 1" [disabled]="page === 1" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">Anterior</button>
-		<span>Página {{ page }} de {{ totalPaginas }}</span>
-		<button (click)="page = page + 1" [disabled]="page === totalPaginas" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">Siguiente</button>
-	</div>
-
-	<!-- Modal de familiares -->
-	<div *ngIf="showFamiliares && empleadoFamiliares" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-		<div class="bg-white rounded shadow-lg p-6 relative w-full max-w-lg">
-			<button (click)="cerrarFamiliares()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">&times;</button>
-			<app-familiares-modal [idEmpleado]="empleadoFamiliares.id!"></app-familiares-modal>
-		</div>
-	</div>
+<div class="container mx-auto p-4">
+  <h2 class="text-xl font-bold mb-4">Empleados</h2>
+  <button mat-raised-button color="primary" (click)="abrirFormulario()">Agregar empleado</button>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-full mt-4">
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let e">{{e.nombre}}</td>
+    </ng-container>
+    <ng-container matColumnDef="correo">
+      <th mat-header-cell *matHeaderCellDef>Correo</th>
+      <td mat-cell *matCellDef="let e">{{e.correo}}</td>
+    </ng-container>
+    <ng-container matColumnDef="cargo">
+      <th mat-header-cell *matHeaderCellDef>Cargo</th>
+      <td mat-cell *matCellDef="let e">{{e.cargo}}</td>
+    </ng-container>
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let e">
+        <button mat-button color="accent" (click)="abrirFormulario(e)">Editar</button>
+        <button mat-button color="warn" (click)="eliminarEmpleado(e.id)">Eliminar</button>
+      </td>
+    </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="error" class="text-red-600">{{error}}</div>
 </div>

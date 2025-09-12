@@ -9,6 +9,12 @@ import { AppComponent } from './app.component';
 import { EmpleadosListComponent } from './components/empleados-list/empleados-list.component';
 import { EmpleadoFormComponent } from './components/empleado-form/empleado-form.component';
 import { FamiliaresModalComponent } from './components/familiares-modal/familiares-modal.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +27,13 @@ import { FamiliaresModalComponent } from './components/familiares-modal/familiar
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+  MatButtonModule,
+  MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

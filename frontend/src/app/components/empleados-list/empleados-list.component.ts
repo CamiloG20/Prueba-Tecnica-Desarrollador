@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { EmpleadosService } from '../../services/empleados.service';
-import { Empleado } from '../../models/empleado.model';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { EmpleadoService } from '../../services/empleado.service';
+import { EmpleadoFormComponent } from '../empleado-form/empleado-form.component';
 
 @Component({
   selector: 'app-empleados-list',
@@ -8,20 +10,12 @@ import { Empleado } from '../../models/empleado.model';
   styleUrls: ['./empleados-list.component.scss']
 })
 export class EmpleadosListComponent implements OnInit {
-  empleados: Empleado[] = [];
-  empleadoEdit?: Empleado;
-  mostrarForm = false;
+  dataSource = new MatTableDataSource<any>([]);
+  displayedColumns: string[] = ['nombre', 'correo', 'cargo', 'acciones'];
   loading = false;
   error = '';
 
-  // Filtro y paginación
-  search = '';
-  page = 1;
-  pageSize = 5;
-  showFamiliares = false;
-  empleadoFamiliares?: Empleado;
-
-  constructor(private empleadosService: EmpleadosService) {}
+  constructor(private empleadoService: EmpleadoService, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.cargarEmpleados();
@@ -29,62 +23,27 @@ export class EmpleadosListComponent implements OnInit {
 
   cargarEmpleados() {
     this.loading = true;
-    this.empleadosService.getEmpleados().subscribe({
-      next: (data) => { this.empleados = data; this.loading = false; },
-      error: (err) => { this.error = 'Error al cargar empleados'; this.loading = false; }
+    this.empleadoService.getEmpleados().subscribe({
+      next: (data) => { this.dataSource.data = data; this.loading = false; },
+      error: () => { this.error = 'Error al cargar empleados'; this.loading = false; }
     });
   }
 
-  get empleadosFiltrados() {
-    let filtrados = this.empleados.filter(e =>
-      e.nombre.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.correo.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.cargo.toLowerCase().includes(this.search.toLowerCase())
-    );
-    const start = (this.page - 1) * this.pageSize;
-    return filtrados.slice(start, start + this.pageSize);
+  abrirFormulario(empleado: any = null) {
+    const dialogRef = this.dialog.open(EmpleadoFormComponent, {
+      width: '400px',
+      data: empleado
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'guardado') {
+        this.cargarEmpleados();
+      }
+    });
   }
 
-  get totalPaginas() {
-    return Math.ceil(this.empleados.filter(e =>
-      e.nombre.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.correo.toLowerCase().includes(this.search.toLowerCase()) ||
-      e.cargo.toLowerCase().includes(this.search.toLowerCase())
-    ).length / this.pageSize);
-  }
-
-  onEdit(empleado: Empleado) {
-    this.empleadoEdit = { ...empleado };
-    this.mostrarForm = true;
-  }
-
-  onDelete(id?: number) {
-    if (!id) return;
+  eliminarEmpleado(id: number) {
     if (confirm('¿Eliminar empleado?')) {
-      this.empleadosService.deleteEmpleado(id).subscribe({
-        next: () => this.cargarEmpleados(),
-        error: () => alert('Error al eliminar')
-      });
+      this.empleadoService.eliminarEmpleado(id).subscribe(() => this.cargarEmpleados());
     }
-  }
-
-  onFamiliares(empleado: Empleado) {
-    this.empleadoFamiliares = empleado;
-    this.showFamiliares = true;
-  }
-
-  cerrarFamiliares() {
-    this.showFamiliares = false;
-    this.empleadoFamiliares = undefined;
-  }
-
-  onNuevo() {
-    this.empleadoEdit = undefined;
-    this.mostrarForm = true;
-  }
-
-  onGuardado() {
-    this.mostrarForm = false;
-    this.cargarEmpleados();
   }
 }

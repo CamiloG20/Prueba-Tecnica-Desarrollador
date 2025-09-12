@@ -1,50 +1,50 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { EmpleadosService } from '../../services/empleados.service';
-import { Empleado } from '../../models/empleado.model';
+import { EmpleadoService } from '../../services/empleado.service';
 
 @Component({
   selector: 'app-empleado-form',
   templateUrl: './empleado-form.component.html',
   styleUrls: ['./empleado-form.component.scss']
 })
-export class EmpleadoFormComponent implements OnInit {
-  @Input() empleado?: Empleado;
-  @Output() guardado = new EventEmitter<void>();
+export class EmpleadoFormComponent {
   form: FormGroup;
   loading = false;
   error = '';
 
-  constructor(private fb: FormBuilder, private empleadosService: EmpleadosService) {
+  constructor(
+    private fb: FormBuilder,
+    private empleadoService: EmpleadoService,
+    public dialogRef: MatDialogRef<EmpleadoFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
     this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      correo: ['', [Validators.required, Validators.email]],
-      cargo: ['', Validators.required],
-      fecha_ingreso: ['']
+      nombre: [data?.nombre || '', Validators.required],
+      correo: [data?.correo || '', [Validators.required, Validators.email]],
+      cargo: [data?.cargo || '', Validators.required]
     });
-  }
-
-  ngOnInit() {
-    if (this.empleado) {
-      this.form.patchValue(this.empleado);
-    }
   }
 
   onSubmit() {
     if (this.form.invalid) return;
     this.loading = true;
     this.error = '';
-    const data = this.form.value;
-    if (this.empleado && this.empleado.id) {
-      this.empleadosService.updateEmpleado(this.empleado.id, data).subscribe({
-        next: () => { this.loading = false; this.guardado.emit(); },
-        error: err => { this.loading = false; this.error = 'Error al actualizar.'; }
+    const empleado = this.form.value;
+    if (this.data && this.data.id) {
+      this.empleadoService.actualizarEmpleado(this.data.id, empleado).subscribe({
+        next: () => { this.loading = false; this.dialogRef.close('guardado'); },
+        error: () => { this.loading = false; this.error = 'Error al actualizar.'; }
       });
     } else {
-      this.empleadosService.createEmpleado(data).subscribe({
-        next: () => { this.loading = false; this.guardado.emit(); this.form.reset(); },
-        error: err => { this.loading = false; this.error = 'Error al crear.'; }
+      this.empleadoService.crearEmpleado(empleado).subscribe({
+        next: () => { this.loading = false; this.dialogRef.close('guardado'); },
+        error: () => { this.loading = false; this.error = 'Error al crear.'; }
       });
     }
+  }
+
+  onCancel() {
+    this.dialogRef.close();
   }
 }
