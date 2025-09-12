@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
@@ -9,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EmpleadosListComponent } from './components/empleados-list/empleados-list.component';
 import { EmpleadoFormComponent } from './components/empleado-form/empleado-form.component';
+import { FamiliaresModalComponent } from './components/familiares-modal/familiares-modal.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,7 +19,8 @@ import { MatTableModule } from '@angular/material/table';
   declarations: [
     AppComponent,
     EmpleadosListComponent,
-    EmpleadoFormComponent,
+      EmpleadoFormComponent,
+      FamiliaresModalComponent,
   ],
   imports: [
     BrowserModule,

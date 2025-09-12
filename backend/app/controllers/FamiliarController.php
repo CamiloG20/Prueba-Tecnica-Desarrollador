@@ -8,6 +8,7 @@ class FamiliarController {
     }
     public function create($id_empleado) {
         $data = json_decode(file_get_contents('php://input'), true);
+        // Validar y crear familiar usando solo 'nombre' como campo
         $errores = $this->validarFamiliar($data);
         if (!empty($errores)) {
             http_response_code(422);
@@ -25,8 +26,8 @@ class FamiliarController {
     // Validación de datos de familiar
     private function validarFamiliar($data) {
         $errores = [];
-        if (empty($data['nombre_familiar'])) {
-            $errores['nombre_familiar'] = 'El nombre del familiar es obligatorio.';
+        if (empty($data['nombre'])) {
+            $errores['nombre'] = 'El nombre del familiar es obligatorio.';
         }
         if (empty($data['parentesco'])) {
             $errores['parentesco'] = 'El parentesco es obligatorio.';

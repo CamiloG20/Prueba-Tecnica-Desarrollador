@@ -19,21 +19,25 @@ class Empleado {
     }
 
     public function create($data) {
-        $stmt = $this->db->prepare('INSERT INTO empleados (nombre, correo, cargo) VALUES (?, ?, ?)');
+        $fecha = (isset($data['fecha_ingreso']) && $data['fecha_ingreso'] !== '') ? $data['fecha_ingreso'] : null;
+        $stmt = $this->db->prepare('INSERT INTO empleados (nombre, correo, cargo, fecha_ingreso) VALUES (?, ?, ?, ?)');
         $stmt->execute([
             $data['nombre'],
             $data['correo'],
-            $data['cargo']
+            $data['cargo'],
+            $fecha
         ]);
         return $this->find($this->db->lastInsertId());
     }
 
     public function update($id, $data) {
-        $stmt = $this->db->prepare('UPDATE empleados SET nombre = ?, correo = ?, cargo = ? WHERE id = ?');
+        $fecha = (isset($data['fecha_ingreso']) && $data['fecha_ingreso'] !== '') ? $data['fecha_ingreso'] : null;
+        $stmt = $this->db->prepare('UPDATE empleados SET nombre = ?, correo = ?, cargo = ?, fecha_ingreso = ? WHERE id = ?');
         $stmt->execute([
             $data['nombre'],
             $data['correo'],
             $data['cargo'],
+            $fecha,
             $id
         ]);
         return $this->find($id);

@@ -22,7 +22,8 @@ export class EmpleadoFormComponent {
     this.form = this.fb.group({
       nombre: [data?.nombre || '', Validators.required],
       correo: [data?.correo || '', [Validators.required, Validators.email]],
-      cargo: [data?.cargo || '', Validators.required]
+      cargo: [data?.cargo || '', Validators.required],
+      fecha_ingreso: [data?.fecha_ingreso || '']
     });
   }
 

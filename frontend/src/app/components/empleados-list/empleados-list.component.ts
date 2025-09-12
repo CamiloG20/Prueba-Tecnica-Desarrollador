@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { EmpleadoService } from '../../services/empleado.service';
 import { EmpleadoFormComponent } from '../empleado-form/empleado-form.component';
+import { FamiliaresModalComponent } from '../familiares-modal/familiares-modal.component';
 
 @Component({
   selector: 'app-empleados-list',
@@ -11,7 +12,7 @@ import { EmpleadoFormComponent } from '../empleado-form/empleado-form.component'
 })
 export class EmpleadosListComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = ['nombre', 'correo', 'cargo', 'acciones'];
+  displayedColumns: string[] = ['nombre', 'correo', 'cargo', 'fecha_ingreso', 'acciones'];
   loading = false;
   error = '';
 
@@ -45,5 +46,12 @@ export class EmpleadosListComponent implements OnInit {
     if (confirm('¿Eliminar empleado?')) {
       this.empleadoService.eliminarEmpleado(id).subscribe(() => this.cargarEmpleados());
     }
+  }
+
+  verFamiliares(empleado: any) {
+    this.dialog.open(FamiliaresModalComponent, {
+      width: '600px',
+      data: { empleadoId: empleado.id }
+    });
   }
 }

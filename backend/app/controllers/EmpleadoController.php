@@ -30,6 +30,10 @@ class EmpleadoController {
             echo json_encode(['error' => 'Datos incompletos']);
             return;
         }
+        // Asegura que siempre se envíe fecha_ingreso (puede ser null o string vacío)
+        if (!isset($data['fecha_ingreso']) || $data['fecha_ingreso'] === '') {
+            $data['fecha_ingreso'] = null;
+        }
         $empleado = $this->model->create($data);
         echo json_encode($empleado);
     }
@@ -40,6 +44,9 @@ class EmpleadoController {
             http_response_code(400);
             echo json_encode(['error' => 'Datos incompletos']);
             return;
+        }
+        if (!isset($data['fecha_ingreso']) || $data['fecha_ingreso'] === '') {
+            $data['fecha_ingreso'] = null;
         }
         $empleado = $this->model->update($id, $data);
         echo json_encode($empleado);
