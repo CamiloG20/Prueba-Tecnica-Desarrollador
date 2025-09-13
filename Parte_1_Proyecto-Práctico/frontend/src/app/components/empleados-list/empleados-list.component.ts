@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { EmpleadoService } from '../../services/empleado.service';
 import { EmpleadoFormComponent } from '../empleado-form/empleado-form.component';
@@ -43,9 +44,18 @@ export class EmpleadosListComponent implements OnInit {
   }
 
   eliminarEmpleado(id: number) {
-    if (confirm('¿Eliminar empleado?')) {
-      this.empleadoService.eliminarEmpleado(id).subscribe(() => this.cargarEmpleados());
-    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Eliminar empleado',
+        message: '¿Está seguro que desea eliminar este empleado?'
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.empleadoService.eliminarEmpleado(id).subscribe(() => this.cargarEmpleados());
+      }
+    });
   }
 
   verFamiliares(empleado: any) {

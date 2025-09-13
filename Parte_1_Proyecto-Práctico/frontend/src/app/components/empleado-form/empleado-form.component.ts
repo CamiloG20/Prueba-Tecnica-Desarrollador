@@ -23,7 +23,7 @@ export class EmpleadoFormComponent {
       nombre: [data?.nombre || '', Validators.required],
       correo: [data?.correo || '', [Validators.required, Validators.email]],
       cargo: [data?.cargo || '', Validators.required],
-      fecha_ingreso: [data?.fecha_ingreso || '']
+      fecha_ingreso: [data?.fecha_ingreso || '', Validators.required]
     });
   }
 

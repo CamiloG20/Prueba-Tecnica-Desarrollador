@@ -1,6 +1,7 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog.component';
 import { FamiliarService } from '../../services/familiar.service';
 
 @Component({
@@ -17,12 +18,13 @@ export class FamiliaresModalComponent implements OnInit {
     private familiarService: FamiliarService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<FamiliaresModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { empleadoId: number }
+    @Inject(MAT_DIALOG_DATA) public data: { empleadoId: number },
+    private dialog: MatDialog
   ) {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       parentesco: ['', Validators.required],
-      fecha_nacimiento: ['']
+      fecha_nacimiento: ['', [Validators.required]]
     });
   }
 
@@ -48,11 +50,21 @@ export class FamiliaresModalComponent implements OnInit {
   }
 
   eliminarFamiliar(id: number) {
-    if (!confirm('¿Eliminar familiar?')) return;
-    this.loading = true;
-    this.familiarService.eliminarFamiliar(id).subscribe({
-      next: () => { this.cargarFamiliares(); this.loading = false; },
-      error: () => { this.error = 'Error al eliminar familiar'; this.loading = false; }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Eliminar familiar',
+        message: '¿Está seguro que desea eliminar este familiar?'
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loading = true;
+        this.familiarService.eliminarFamiliar(id).subscribe({
+          next: () => { this.cargarFamiliares(); this.loading = false; },
+          error: () => { this.error = 'Error al eliminar familiar'; this.loading = false; }
+        });
+      }
     });
   }
 

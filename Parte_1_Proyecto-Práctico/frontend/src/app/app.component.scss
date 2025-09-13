@@ -2,7 +2,7 @@
   @apply min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center;
 }
 .card-app {
-  @apply w-full max-w-3xl bg-white rounded-2xl shadow-2xl p-8;
+  @apply w-full max-w-6xl bg-white rounded-2xl shadow-2xl px-8 py-10 my-12;
 }
 .title-app {
   @apply text-3xl font-extrabold mb-8 text-center text-blue-800 tracking-wide drop-shadow;

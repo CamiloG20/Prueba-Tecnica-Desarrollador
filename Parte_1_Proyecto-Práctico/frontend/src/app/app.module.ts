@@ -15,12 +15,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { ConfirmDialogComponent } from './shared/confirm-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
     EmpleadosListComponent,
-      EmpleadoFormComponent,
-      FamiliaresModalComponent,
+    EmpleadoFormComponent,
+    FamiliaresModalComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
