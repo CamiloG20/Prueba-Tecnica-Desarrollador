@@ -1,0 +1,23 @@
+<div class="bg-app">
+  <div class="card-app">
+    <h1 class="title-app">
+      Gestión de Empleados
+    </h1>
+
+    <div *ngIf="mensaje" class="mensaje-app">
+      <div
+        [ngClass]="{
+          'bg-green-100 text-green-800 border-green-300': mensaje.tipo === 'exito',
+          'bg-red-100 text-red-800 border-red-300': mensaje.tipo === 'error'
+        }"
+        class="mensaje-alerta"
+      >
+        <svg *ngIf="mensaje.tipo === 'exito'" class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <svg *ngIf="mensaje.tipo === 'error'" class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        {{ mensaje.texto }}
+      </div>
+    </div>
+
+    <app-empleados-list></app-empleados-list>
+  </div>
+</div>
