@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { EmpleadoService } from '../../services/empleado.service';
 import { EmpleadoFormComponent } from '../empleado-form/empleado-form.component';
 import { FamiliaresModalComponent } from '../familiares-modal/familiares-modal.component';
@@ -11,11 +12,13 @@ import { FamiliaresModalComponent } from '../familiares-modal/familiares-modal.c
   templateUrl: './empleados-list.component.html',
   styleUrls: ['./empleados-list.component.scss']
 })
-export class EmpleadosListComponent implements OnInit {
+export class EmpleadosListComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = ['nombre', 'correo', 'cargo', 'fecha_ingreso', 'acciones'];
   loading = false;
   error = '';
+  filtro: string = '';
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private empleadoService: EmpleadoService, private dialog: MatDialog) {}
 
@@ -23,12 +26,26 @@ export class EmpleadosListComponent implements OnInit {
     this.cargarEmpleados();
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
   cargarEmpleados() {
     this.loading = true;
     this.empleadoService.getEmpleados().subscribe({
-      next: (data) => { this.dataSource.data = data; this.loading = false; },
+      next: (data) => {
+        this.dataSource.data = data;
+        this.dataSource.paginator = this.paginator;
+        this.loading = false;
+      },
       error: () => { this.error = 'Error al cargar empleados'; this.loading = false; }
     });
+  }
+
+  aplicarFiltro(event: Event) {
+    const valor = (event.target as HTMLInputElement).value;
+    this.filtro = valor;
+    this.dataSource.filter = valor.trim().toLowerCase();
   }
 
   abrirFormulario(empleado: any = null) {

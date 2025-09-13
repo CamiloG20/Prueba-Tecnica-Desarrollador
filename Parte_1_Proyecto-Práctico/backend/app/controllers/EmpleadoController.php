@@ -1,6 +1,8 @@
 
+
 <?php
 require_once __DIR__ . '/../models/Empleado.php';
+require_once __DIR__ . '/../core/AuthMiddleware.php';
 
 class EmpleadoController {
     private $model;
@@ -14,6 +16,7 @@ class EmpleadoController {
     }
 
     public function show($id) {
+        AuthMiddleware::check();
         $empleado = $this->model->find($id);
         if ($empleado) {
             echo json_encode($empleado);
@@ -24,6 +27,7 @@ class EmpleadoController {
     }
 
     public function store() {
+        AuthMiddleware::check();
         $data = json_decode(file_get_contents('php://input'), true);
         if (!$data || !isset($data['nombre'], $data['correo'], $data['cargo'])) {
             http_response_code(400);
@@ -39,6 +43,7 @@ class EmpleadoController {
     }
 
     public function update($id) {
+        AuthMiddleware::check();
         $data = json_decode(file_get_contents('php://input'), true);
         if (!$data || !isset($data['nombre'], $data['correo'], $data['cargo'])) {
             http_response_code(400);
@@ -53,6 +58,7 @@ class EmpleadoController {
     }
 
     public function destroy($id) {
+        AuthMiddleware::check();
         $ok = $this->model->delete($id);
         if ($ok) {
             echo json_encode(['success' => true]);

@@ -3,7 +3,8 @@
 // Punto de entrada para el backend CRUD básico de empleados
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+// Cambia la URL por la de tu frontend en producción si es necesario
+header('Access-Control-Allow-Origin: http://localhost:4200');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 

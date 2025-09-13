@@ -1,9 +1,12 @@
 <div class="bg-gradient-to-br from-blue-50 to-blue-200 flex items-center justify-center py-8 md:py-12">
   <div class="container mx-auto p-6 bg-white rounded-xl shadow-lg">
     <h2 class="text-xl font-bold mb-4 text-blue-700">Empleados</h2>
-    <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow transition mb-4" (click)="abrirFormulario()">
-      Agregar empleado
-    </button>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+      <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow transition" (click)="abrirFormulario()">
+        Agregar empleado
+      </button>
+      <input type="text" placeholder="Buscar empleado..." (input)="aplicarFiltro($event)" class="border border-gray-300 rounded px-3 py-2 w-full md:w-64 focus:ring-2 focus:ring-blue-400 transition" />
+    </div>
     <table class="min-w-full divide-y divide-gray-200 shadow rounded-lg overflow-hidden mt-4">
       <thead>
         <tr>
@@ -15,7 +18,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of dataSource.data" class="odd:bg-white even:bg-blue-50 hover:bg-blue-100 transition">
+        <tr *ngFor="let e of dataSource.filteredData" class="odd:bg-white even:bg-blue-50 hover:bg-blue-100 transition">
           <td class="px-4 py-2">{{e.nombre}}</td>
           <td class="px-4 py-2">{{e.correo}}</td>
           <td class="px-4 py-2">{{e.cargo}}</td>
@@ -28,6 +31,7 @@
         </tr>
       </tbody>
     </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     <div *ngIf="loading" class="text-center text-blue-600 mt-4 animate-pulse">Cargando...</div>
     <div *ngIf="error" class="bg-red-100 text-red-700 p-2 rounded mt-4">{{error}}</div>
   </div>
